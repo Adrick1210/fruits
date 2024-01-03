@@ -75,6 +75,18 @@ app.get("/fruits", async (req, res) => {
   }
 });
 
+// Show
+app.get("/fruits/:id", async (req, res) => {
+  try {
+    const id = req.params.id;
+    const fruit = await Fruit.findById(id);
+    res.render("fruits/show.ejs", { fruit });
+  } catch (error) {
+    console.log("-----", error.message, "-----");
+    res.status(400).send("error, read logs for error details");
+  }
+});
+
 // LISTENER
 const PORT = process.env.PORT || 3000;
 app.listen(PORT, () => {
