@@ -13,13 +13,13 @@ mongoose.connection.on("open", () => console.log("connected to mongo"));
 mongoose.connection.on("close", () => console.log("Disconnected from mongo"));
 
 // Fruits Model - destructure Schema and modal in variables
-const {Schema, model} = mongoose;
+const { Schema, model } = mongoose;
 
 // Schema - shape of the Data
 const fruitsSchema = new Schema({
-    name: String,
-    color: String,
-    readyToEat: Boolean
+  name: String,
+  color: String,
+  readyToEat: Boolean,
 });
 // Modal - object for interacting with the db
 const Fruit = model("Fruit", fruitsSchema);
@@ -34,5 +34,12 @@ app.use(methodOverride("_method")); // override form submissions
 app.use(express.static("public")); // serve files from public statically
 
 // ROUTES
+app.get("/", (req, res) => {
+  res.send("your server is running");
+});
 
 // LISTENER
+const PORT = process.env.PORT || 3000;
+app.listen(PORT, () => {
+  console.log(`server is listening on port ${PORT}`);
+});
