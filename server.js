@@ -28,10 +28,10 @@ const Fruit = model("Fruit", fruitsSchema);
 const app = express();
 
 // MIDDLE WARE
-app.use(morgan("dev"));
-app.use(express.urlencoded({ extended: true }));
-app.use(methodOverride("_method"));
-app.use("/public", express.static("public"));
+app.use(morgan("dev")); // logger
+app.use(express.urlencoded({ extended: true })); // parse url encoded bodies
+app.use(methodOverride("_method")); // override form submissions
+app.use(express.static("public")); // serve files from public statically
 
 // ROUTES
 
