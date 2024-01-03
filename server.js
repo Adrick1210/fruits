@@ -81,19 +81,52 @@ app.get("/fruits/new", (req, res) => {
 });
 
 // CREATE
-app.post("/fruits", async (req,res) => {
+app.post("/fruits", async (req, res) => {
   try {
     // check if readyToEat should be true
-    req.body.readyToEat = req.body.readyToEat === "on" ? true : false
+    req.body.readyToEat = req.body.readyToEat === "on" ? true : false;
     // create fruit in the database
     await Fruit.create(req.body);
     // redirect back to main page
-    res.redirect("/fruits")
+    res.redirect("/fruits");
   } catch (error) {
     console.log("-----", error.message, "-----");
     res.status(400).send("error, read logs for error details");
   }
-})
+});
+
+// Edit
+app.get("/fruits/:id/edit", async (req, res) => {
+  try {
+    // get the id
+    const id = req.params.id;
+    // get fruit
+    const fruit = await Fruit.findById(id);
+    // render
+    res.render("fruits/edit.ejs", { fruit });
+  } catch (error) {
+    console.log("-----", error.message, "-----");
+    res.status(400).send("error, read logs for error details");
+  }
+});
+
+// Update
+app.put("/fruits/:id", async (req, res) => {
+  try {
+    // get id
+    const id = req.params.id;
+    // update readyToEat
+    req.body.readyToEat = req.body.readyToEat === "on" ? true : false;
+    // update the fruit
+    await Fruit.findByIdAndUpdate(id, req.body);
+    // redirect to show page
+    res.redirect(`/fruits/${id}`);
+  } catch (error) {
+    console.log("-----", error.message, "-----");
+    res.status(400).send("error, read logs for error details");
+  }
+});
+
 // Show
 app.get("/fruits/:id", async (req, res) => {
   try {
