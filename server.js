@@ -34,8 +34,45 @@ app.use(methodOverride("_method")); // override form submissions
 app.use(express.static("public")); // serve files from public statically
 
 // ROUTES
+// Test
 app.get("/", (req, res) => {
   res.send("your server is running");
+});
+
+// Seed
+app.get("/fruits/seed", async (req, res) => {
+  try {
+    // array of starter fruits
+    const startFruits = [
+      { name: "Orange", color: "orange", readyToEat: false },
+      { name: "Grape", color: "purple", readyToEat: false },
+      { name: "Banana", color: "orange", readyToEat: false },
+      { name: "Strawberry", color: "red", readyToEat: false },
+      { name: "Coconut", color: "brown", readyToEat: false },
+    ];
+    // delete all Fruits
+    await Fruit.deleteMany({});
+
+    // Seed my starter fruits
+    const fruits = await Fruit.create(startFruits);
+
+    // send fruits as response
+    res.json(fruits);
+  } catch (error) {
+    console.log(error.message);
+    res.send("There was a error, read logs for error details");
+  }
+});
+
+// index
+app.get("/fruits", async (req, res) => {
+  try {
+    const fruits = await Fruit.find({});
+    res.render("fruits/index.ejs", { fruits });
+  } catch (error) {
+    console.log("-----", error.message, "-----");
+    res.status(400).send("error, read logs for error details");
+  }
 });
 
 // LISTENER
