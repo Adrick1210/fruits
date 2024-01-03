@@ -64,7 +64,7 @@ app.get("/fruits/seed", async (req, res) => {
   }
 });
 
-// index
+// Index
 app.get("/fruits", async (req, res) => {
   try {
     const fruits = await Fruit.find({});
@@ -75,6 +75,25 @@ app.get("/fruits", async (req, res) => {
   }
 });
 
+// NEW
+app.get("/fruits/new", (req, res) => {
+  res.render("fruits/new.ejs");
+});
+
+// CREATE
+app.post("/fruits", async (req,res) => {
+  try {
+    // check if readyToEat should be true
+    req.body.readyToEat = req.body.readyToEat === "on" ? true : false
+    // create fruit in the database
+    await Fruit.create(req.body);
+    // redirect back to main page
+    res.redirect("/fruits")
+  } catch (error) {
+    console.log("-----", error.message, "-----");
+    res.status(400).send("error, read logs for error details");
+  }
+})
 // Show
 app.get("/fruits/:id", async (req, res) => {
   try {
