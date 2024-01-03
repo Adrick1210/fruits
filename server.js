@@ -127,6 +127,16 @@ app.put("/fruits/:id", async (req, res) => {
   }
 });
 
+// Delete
+app.delete("/fruits/:id", async (req, res) => {
+  //id
+  const id = req.params.id;
+  // delete the fruit
+  await Fruit.findByIdAndDelete(id);
+  // redirect
+  res.redirect("/fruits");
+});
+
 // Show
 app.get("/fruits/:id", async (req, res) => {
   try {
