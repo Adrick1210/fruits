@@ -3,8 +3,7 @@ require("dotenv").config();
 const express = require("express");
 const morgan = require("morgan");
 const methodOverride = require("method-override");
-const mongoose = require("mongoose");
-const Fruit = require("./models/Fruit");
+const FruitController = require("./controllers/fruit");
 
 // App object
 const app = express();
@@ -14,121 +13,12 @@ app.use(morgan("dev")); // logger
 app.use(express.urlencoded({ extended: true })); // parse url encoded bodies
 app.use(methodOverride("_method")); // override form submissions
 app.use(express.static("public")); // serve files from public statically
+app.use("/fruits", FruitController); // use the router
 
 // ROUTES
 // Test
 app.get("/", (req, res) => {
   res.send("your server is running");
-});
-
-// Seed
-app.get("/fruits/seed", async (req, res) => {
-  try {
-    // array of starter fruits
-    const startFruits = [
-      { name: "Orange", color: "orange", readyToEat: false },
-      { name: "Grape", color: "purple", readyToEat: false },
-      { name: "Banana", color: "orange", readyToEat: false },
-      { name: "Strawberry", color: "red", readyToEat: false },
-      { name: "Coconut", color: "brown", readyToEat: false },
-    ];
-    // delete all Fruits
-    await Fruit.deleteMany({});
-
-    // Seed my starter fruits
-    const fruits = await Fruit.create(startFruits);
-
-    // send fruits as response
-    res.json(fruits);
-  } catch (error) {
-    console.log(error.message);
-    res.send("There was a error, read logs for error details");
-  }
-});
-
-// Index
-app.get("/fruits", async (req, res) => {
-  try {
-    const fruits = await Fruit.find({});
-    res.render("fruits/index.ejs", { fruits });
-  } catch (error) {
-    console.log("-----", error.message, "-----");
-    res.status(400).send("error, read logs for error details");
-  }
-});
-
-// NEW
-app.get("/fruits/new", (req, res) => {
-  res.render("fruits/new.ejs");
-});
-
-// CREATE
-app.post("/fruits", async (req, res) => {
-  try {
-    // check if readyToEat should be true
-    req.body.readyToEat = req.body.readyToEat === "on" ? true : false;
-    // create fruit in the database
-    await Fruit.create(req.body);
-    // redirect back to main page
-    res.redirect("/fruits");
-  } catch (error) {
-    console.log("-----", error.message, "-----");
-    res.status(400).send("error, read logs for error details");
-  }
-});
-
-// Edit
-app.get("/fruits/:id/edit", async (req, res) => {
-  try {
-    // get the id
-    const id = req.params.id;
-    // get fruit
-    const fruit = await Fruit.findById(id);
-    // render
-    res.render("fruits/edit.ejs", { fruit });
-  } catch (error) {
-    console.log("-----", error.message, "-----");
-    res.status(400).send("error, read logs for error details");
-  }
-});
-
-// Update
-app.put("/fruits/:id", async (req, res) => {
-  try {
-    // get id
-    const id = req.params.id;
-    // update readyToEat
-    req.body.readyToEat = req.body.readyToEat === "on" ? true : false;
-    // update the fruit
-    await Fruit.findByIdAndUpdate(id, req.body);
-    // redirect to show page
-    res.redirect(`/fruits/${id}`);
-  } catch (error) {
-    console.log("-----", error.message, "-----");
-    res.status(400).send("error, read logs for error details");
-  }
-});
-
-// Delete
-app.delete("/fruits/:id", async (req, res) => {
-  //id
-  const id = req.params.id;
-  // delete the fruit
-  await Fruit.findByIdAndDelete(id);
-  // redirect
-  res.redirect("/fruits");
-});
-
-// Show
-app.get("/fruits/:id", async (req, res) => {
-  try {
-    const id = req.params.id;
-    const fruit = await Fruit.findById(id);
-    res.render("fruits/show.ejs", { fruit });
-  } catch (error) {
-    console.log("-----", error.message, "-----");
-    res.status(400).send("error, read logs for error details");
-  }
 });
 
 // LISTENER
