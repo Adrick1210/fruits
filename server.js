@@ -5,15 +5,27 @@ const morgan = require("morgan");
 const methodOverride = require("method-override");
 const FruitController = require("./controllers/fruit");
 const UserController = require("./controllers/user");
+const session = require("express-session");
+const MongoStore = require("connect-mongo");
 
 // App object
 const app = express();
 
-// MIDDLE WARE
+// NORMAL MIDDLE WARE
 app.use(morgan("dev")); // logger
 app.use(express.urlencoded({ extended: true })); // parse url encoded bodies
 app.use(methodOverride("_method")); // override form submissions
 app.use(express.static("public")); // serve files from public statically
+app.use(
+  session({
+    secret: process.env.SECRET,
+    store: MongoStore.create({ mongoUrl: process.env.DATABASE_URL }),
+    saveUninitialized: true,
+    resave: false,
+  })
+);
+
+// Routers
 app.use("/fruits", FruitController); // router for fruits data
 app.use("/user", UserController); // router for user data
 

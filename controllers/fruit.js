@@ -5,11 +5,22 @@ const Fruit = require("../models/Fruit");
 // Router
 const router = express.Router();
 
+// MIDDLE WARE
+router.use((req, res, next) => {
+  console.table(req.session);
+
+  if (req.session.loggedIn) {
+    next();
+  } else {
+    res.redirect("/user/login");
+  }
+});
+
 // Routes
 // Seed
 router.get("/seed", async (req, res) => {
   try {
-  // send fruits as response
+    // send fruits as response
     res.json(fruits);
   } catch (error) {
     console.log(error.message);
