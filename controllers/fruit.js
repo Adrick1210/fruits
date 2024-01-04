@@ -9,21 +9,7 @@ const router = express.Router();
 // Seed
 router.get("/seed", async (req, res) => {
   try {
-    // array of starter fruits
-    const startFruits = [
-      { name: "Orange", color: "orange", readyToEat: false },
-      { name: "Grape", color: "purple", readyToEat: false },
-      { name: "Banana", color: "orange", readyToEat: false },
-      { name: "Strawberry", color: "red", readyToEat: false },
-      { name: "Coconut", color: "brown", readyToEat: false },
-    ];
-    // delete all Fruits
-    await Fruit.deleteMany({});
-
-    // Seed my starter fruits
-    const fruits = await Fruit.create(startFruits);
-
-    // send fruits as response
+  // send fruits as response
     res.json(fruits);
   } catch (error) {
     console.log(error.message);
