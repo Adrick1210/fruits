@@ -9,6 +9,7 @@ const fruitsSchema = new Schema({
   name: String,
   color: String,
   readyToEat: Boolean,
+  username: String,
 });
 // Modal - object for interacting with the db
 const Fruit = model("Fruit", fruitsSchema);

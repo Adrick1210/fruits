@@ -31,7 +31,8 @@ router.get("/seed", async (req, res) => {
 // Index
 router.get("/", async (req, res) => {
   try {
-    const fruits = await Fruit.find({});
+    const username = req.session.username
+    const fruits = await Fruit.find({username});
     res.render("fruits/index.ejs", { fruits });
   } catch (error) {
     console.log("-----", error.message, "-----");
@@ -49,6 +50,8 @@ router.post("/", async (req, res) => {
   try {
     // check if readyToEat should be true
     req.body.readyToEat = req.body.readyToEat === "on" ? true : false;
+    // add user to req.body
+    req.body.username = req.session.username
     // create fruit in the database
     await Fruit.create(req.body);
     // redirect back to main page
